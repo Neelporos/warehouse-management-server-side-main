@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient, ServerApiVersion, ObjectId, } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId, ObjectID, } = require("mongodb");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
@@ -42,12 +42,20 @@ async function run() {
       console.log(query);
       const product = await productsCollection.findOne(query);
       res.send(product);
-    })
+    });
 
     // Add Product
     app.post('/products', async (req, res) => {
       const newProduct = req.body;
       const result = await productsCollection.insertOne(newProduct);
+      res.send(result);
+    });
+
+    // Delete Product
+    app.delete('/products/:id', async (req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = productsCollection.deleteOne(query);
       res.send(result);
     })
   } 
