@@ -15,10 +15,9 @@ const uri = `mongodb+srv://assingmentdb:vYaLbI0UJ5BYzNdE@cluster0.zeg0g.mongodb.
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1, 
+  serverApi: ServerApiVersion.v1,
 });
 //
-
 
 async function run() {
   try {
@@ -27,7 +26,7 @@ async function run() {
     const productsCollection = client.db("inventory").collection("items");
 
     // Get All Products
-    app.get('/products', async (req, res) => {
+    app.get("/products", async (req, res) => {
       const query = {};
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
@@ -35,17 +34,17 @@ async function run() {
     });
 
     // Get Single Product
-    app.get('/products/:id', async (req, res) => {
+    app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
-      const query = {_id: ObjectId(id)};
+      const query = { _id: ObjectId(id) };
       console.log(query);
       const product = await productsCollection.findOne(query);
       res.send(product);
     });
-    
+
     // Quantity Update
-    app.put('/products/:id', async (req, res) => {
+    app.put("/products/:id", async (req, res) => {
       const id = req.params.id;
       const updateStock = req.body;
       const filter = { _id: ObjectId(id) };
@@ -57,35 +56,34 @@ async function run() {
         options
       );
       res.send(result);
-    })
+    });
 
     // Add Product
-    app.post('/products', async (req, res) => {
+    app.post("/products", async (req, res) => {
       const newProduct = req.body;
       const result = await productsCollection.insertOne(newProduct);
       res.send(result);
     });
 
     // Your Products
-    app.get('/yourproducts', async (req, res) => {
+    app.get("/yourproducts", async (req, res) => {
       const email = req.query.email;
-      const query = {email: email};
+      console.log(email);
+      const query = { email: email };
       const cursor = productsCollection.find(query);
       const yourProducts = await cursor.toArray();
       res.send(yourProducts);
-    })
-
+    });
+    
 
     // Delete Product
-    app.delete('/products/:id', async (req, res) =>{
+    app.delete("/products/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: ObjectId(id)};
+      const query = { _id: ObjectId(id) };
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
-  } 
-  finally {
-    
+  } finally {
   }
 }
 run().catch(console.dir);
