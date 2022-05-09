@@ -43,7 +43,8 @@ async function run() {
       const product = await productsCollection.findOne(query);
       res.send(product);
     });
-
+    
+    // Quantity Update
     app.put('/products/:id', async (req, res) => {
       const id = req.params.id;
       const updateStock = req.body;
@@ -65,13 +66,23 @@ async function run() {
       res.send(result);
     });
 
+    // Your Products
+    app.get('/yourproducts', async (req, res) => {
+      const email = req.query.email;
+      const query = {email: email};
+      const cursor = productsCollection.find(query);
+      const yourProducts = await cursor.toArray();
+      res.send(yourProducts);
+    })
+
+
     // Delete Product
     app.delete('/products/:id', async (req, res) =>{
       const id = req.params.id;
       const query = {_id: ObjectId(id)};
       const result = await productsCollection.deleteOne(query);
       res.send(result);
-    })
+    });
   } 
   finally {
     
